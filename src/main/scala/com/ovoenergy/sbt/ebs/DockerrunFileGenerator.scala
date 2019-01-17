@@ -43,7 +43,7 @@ object DockerrunFileGenerator {
 
   def generateDockerrunFileVersion2(targetDir: File, packageName: String, version: String,
     dockerRepository: Option[String], s3AuthBucket: String, s3AuthKey: String,
-    portMappings: Map[Int, Int], memoryOrInstanceType: Either[(Int, Int), EC2InstanceType],
+    portMappings: List[PortMapping], memoryOrInstanceType: Either[(Int, Int), EC2InstanceType],
     useMemoryReservation: Boolean) = {
 
     val fileName = memoryOrInstanceType match {
@@ -84,10 +84,11 @@ object DockerrunFileGenerator {
           |      "$memorySettingField": $memorySettingValue,
           |      "essential": true,
           |      "portMappings": [
-          |""".stripMargin + portMappings.map { case (hostPort, containerPort) =>
+          |""".stripMargin + portMappings.map { case PortMapping(hostPort, containerPort, protocol) =>
       s"""|        {
           |          "hostPort": $hostPort,
           |          "containerPort": $containerPort
+          |          "protocol": "$protocol"
           |        }""".stripMargin }.mkString(",\n") + '\n' +
       s"""|      ]
           |    }

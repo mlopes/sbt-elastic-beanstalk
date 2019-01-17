@@ -30,7 +30,7 @@ object ElasticBeanstalkPlugin extends AutoPlugin with NativePackagerKeys with Do
     lazy val ebsContainerMemory = settingKey[Int]("Memory required by the Docker container (Dockerrun version 2 only)")
     lazy val ebsContainerMemoryReservation = settingKey[Int]("Memory reservation for the Docker container (Dockerrun version 2 only)")
     lazy val ebsContainerUseMemoryReservation = settingKey[Boolean]("Use memoryReservation instead of memory setting for the Docker container (Dockerrun version 2 only)")
-    lazy val ebsPortMappings = settingKey[Map[Int, Int]]("Port mappings for the Docker container (Dockerrun version 2 only)")
+    lazy val ebsPortMappings = settingKey[List[PortMapping]]("Port mappings for the Docker container (Dockerrun version 2 only)")
     lazy val ebsEC2InstanceTypes = settingKey[Set[EC2InstanceType]]("EC2 instance types to generate Dockerrun files for (Dockerrun version 2 only)")
 
     lazy val ebsStageDockerrunFiles = taskKey[List[File]]("Stages the Dockerrun.aws.json files")
@@ -52,9 +52,9 @@ object ElasticBeanstalkPlugin extends AutoPlugin with NativePackagerKeys with Do
     ebsContainerMemory := EC2InstanceTypes.T2.Micro.memory,
     ebsContainerMemoryReservation := EC2InstanceTypes.T2.Micro.memoryReservation,
     ebsContainerUseMemoryReservation := true,
-    ebsPortMappings := Map(
-      80 -> 8080,
-      8081 -> 8081
+    ebsPortMappings := List(
+      PortMapping(80, 8080),
+      PortMapping(8081, 8081)
     ),
     ebsEC2InstanceTypes := Set.empty,
 
