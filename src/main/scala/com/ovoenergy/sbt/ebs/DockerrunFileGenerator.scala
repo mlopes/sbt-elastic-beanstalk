@@ -87,7 +87,7 @@ object DockerrunFileGenerator {
           |""".stripMargin + portMappings.map { case PortMapping(hostPort, containerPort, protocol) =>
       s"""|        {
           |          "hostPort": $hostPort,
-          |          "containerPort": $containerPort
+          |          "containerPort": $containerPort,
           |          "protocol": "$protocol"
           |        }""".stripMargin }.mkString(",\n") + '\n' +
       s"""|      ]
