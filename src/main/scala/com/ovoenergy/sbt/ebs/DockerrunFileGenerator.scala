@@ -44,7 +44,7 @@ object DockerrunFileGenerator {
   def generateDockerrunFileVersion2(targetDir: File, packageName: String, version: String,
     dockerRepository: Option[String], s3AuthBucket: String, s3AuthKey: String,
     portMappings: List[PortMapping], memoryOrInstanceType: Either[(Int, Int), EC2InstanceType],
-    useMemoryReservation: Boolean) = {
+    useMemoryReservation: Boolean, maybeSharedMemory: Option[Int]) = {
 
     val fileName = memoryOrInstanceType match {
       case Left(_)             => s"${version}.json"
@@ -70,6 +70,15 @@ object DockerrunFileGenerator {
     }
     val memorySettingField = if (useMemoryReservation) "memoryReservation" else "memory"
     val memorySettingValue = if (useMemoryReservation) memoryReservation else memory
+
+    val sharedMemorySetting = maybeSharedMemory.fold("")(sharedMemorySize =>
+      s"""
+         |"linuxParameters": {
+         |  "sharedMemorySize": $sharedMemorySize
+         |},
+       """.stripMargin
+    )
+
     val fileContents =
       s"""|{
           |  "AWSEBDockerrunVersion": 2,
@@ -83,6 +92,7 @@ object DockerrunFileGenerator {
           |      "image": "$imageName",
           |      "$memorySettingField": $memorySettingValue,
           |      "essential": true,
+          |      $sharedMemorySetting
           |      "portMappings": [
           |""".stripMargin + portMappings.map { case PortMapping(hostPort, containerPort, protocol) =>
       s"""|        {
