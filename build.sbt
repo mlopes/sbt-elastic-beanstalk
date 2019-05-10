@@ -19,6 +19,7 @@ resolvers ++= Seq(
 )
 
 pomIncludeRepository := { _ => false }
+bintrayOrganization := Some("ovotech")
 licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 homepage := Some(url("http://www.ovoenergy.com"))
 pomExtra := (
