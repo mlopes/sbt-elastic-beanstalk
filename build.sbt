@@ -11,12 +11,13 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-elasticbeanstalk" % "1.10.77",
   "com.amazonaws" % "aws-java-sdk-s3" % "1.10.77")
 
-credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 publishMavenStyle := true
-publishTo := {
-  if (isSnapshot.value) Some("Ovotech Nexus Repo Snapshots" at "http://nexus.ovotech.org.uk:8081/nexus/content/repositories/snapshots/")
-  else Some("Ovotech Nexus Repo Releases" at "http://nexus.ovotech.org.uk:8081/nexus/content/repositories/releases/")
-}
+
+resolvers ++= Seq(
+  Resolver.bintrayRepo("ovotech", "maven"),
+  "confluent" at "https://packages.confluent.io/maven"
+)
+
 pomIncludeRepository := { _ => false }
 licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 homepage := Some(url("http://www.ovoenergy.com"))
